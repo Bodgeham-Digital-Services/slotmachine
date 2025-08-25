@@ -73,8 +73,7 @@ class SlotMachine:
 
         duration = self.talks_by_id[talk_id].duration
         definition = pulp.lpSum(
-            self.start_var(s, talk_id, venue)
-            for s in range(slot, max(-1, slot - duration), -1)
+            self.start_var(s, talk_id, venue) for s in range(slot, max(-1, slot - duration), -1)
         )
 
         self.problem.addConstraint(variable == definition)
@@ -92,9 +91,7 @@ class SlotMachine:
         for talk in talks:
             self.problem.addConstraint(
                 pulp.lpSum(
-                    self.start_var(slot, talk.id, venue)
-                    for venue in venues
-                    for slot in self.slots_available
+                    self.start_var(slot, talk.id, venue) for venue in venues for slot in self.slots_available
                 )
                 == 1
             )
@@ -102,9 +99,7 @@ class SlotMachine:
         # At most one talk may be active in a given venue and slot.
         for v in venues:
             for slot in self.slots_available:
-                self.problem.addConstraint(
-                    pulp.lpSum(self.active(slot, talk.id, v) for talk in talks) <= 1
-                )
+                self.problem.addConstraint(pulp.lpSum(self.active(slot, talk.id, v) for talk in talks) <= 1)
 
         self.problem += (
             5
@@ -160,17 +155,13 @@ class SlotMachine:
                 for slot in self.slots_available:
                     self.problem.addConstraint(
                         pulp.lpSum(
-                            self.active(slot, talk_id, venue)
-                            for talk_id in conflicts
-                            for venue in venues
+                            self.active(slot, talk_id, venue) for talk_id in conflicts for venue in venues
                         )
                         <= 1
                     )
         return self.problem
 
-    def schedule_talks(
-        self, talks: Iterable[Talk], old_talks=None
-    ) -> Iterable[tuple[Slot, TalkID, int]]:
+    def schedule_talks(self, talks: Iterable[Talk], old_talks=None) -> Iterable[tuple[Slot, TalkID, int]]:
         if old_talks is None:
             old_talks = []
         start = time.time()
@@ -234,9 +225,7 @@ class SlotMachine:
         talk_data = {}
         old_slots = []
 
-        event_start = min(
-            parser.parse(r["start"]) for event in schedule for r in event["time_ranges"]
-        )
+        event_start = min(parser.parse(r["start"]) for event in schedule for r in event["time_ranges"])
 
         for event in schedule:
             talk_data[event["id"]] = event

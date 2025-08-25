@@ -29,9 +29,7 @@ class UtilTestCase(unittest.TestCase):
 
 
 class ScheduleTalksTestCase(unittest.TestCase):
-    def schedule_and_basic_asserts(
-        self, talk_defs, talk_permissions, avail_slots, old_talks=None
-    ):
+    def schedule_and_basic_asserts(self, talk_defs, talk_permissions, avail_slots, old_talks=None):
         if old_talks is None:
             old_talks = []
 
@@ -69,9 +67,7 @@ class ScheduleTalksTestCase(unittest.TestCase):
 
         return solved
 
-    def schedule_and_assert_fails(
-        self, talk_defs, talk_permissions, avail_slots, old_talks=None
-    ):
+    def schedule_and_assert_fails(self, talk_defs, talk_permissions, avail_slots, old_talks=None):
         if old_talks is None:
             old_talks = []
 
@@ -102,9 +98,7 @@ class ScheduleTalksTestCase(unittest.TestCase):
             3: {"slots": avail_slots[:], "venues": [101]},
         }
 
-        solved = self.schedule_and_basic_asserts(
-            talk_defs, talk_permissions, avail_slots
-        )
+        solved = self.schedule_and_basic_asserts(talk_defs, talk_permissions, avail_slots)
 
         # Solution should be stable
         solved_second = self.schedule_and_basic_asserts(
@@ -150,9 +144,7 @@ class ScheduleTalksTestCase(unittest.TestCase):
             3: {"slots": avail_slots[:], "venues": [101, 102]},
         }
 
-        solved = self.schedule_and_basic_asserts(
-            talk_defs, talk_permissions, avail_slots
-        )
+        solved = self.schedule_and_basic_asserts(talk_defs, talk_permissions, avail_slots)
 
         talk_venues = dict([(t, v) for s, t, v in solved])
         self.assertEqual(talk_venues[3], 102)
