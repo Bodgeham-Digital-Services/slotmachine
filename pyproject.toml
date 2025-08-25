@@ -1,0 +1,51 @@
+[project]
+name = "slotmachine"
+version = "0.0.7"
+description = "Conference talk scheduler"
+readme = "README.md"
+authors = [{ name = "Electromagnetic Field" }]
+requires-python = ">=3.13"
+classifiers = ["Private :: Do Not Upload"]
+dependencies = ['PuLP<3.3', 'python-dateutil>=2.5.3']
+
+[build-system]
+requires = ["uv_build>=0.8.13,<0.9.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1",
+    "pytest>=8.4.1",
+    "pytest-github-actions-annotate-failures>=0.3.0",
+    "ruff>=0.12.10",
+    "types-python-dateutil>=2.9.0.20250822",
+]
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "SIM", "B", "RUF", "LOG", "G", "I", "T20", "RET"]
+ignore = [
+    "E402", # module-import-not-at-top-of-file: we have lots of bottom-of-file imports
+    "E501", # line-too-long - lots of lines are too long!
+    "E712", # true-false-comparison: clashes frequently with sqlalchemy `filter(foo==bar)`
+
+    "RUF005", # collection-literal-concatenation
+    "RUF010", # explicit-f-string-type-conversion: we prefer `{repr(foo)}` to `{foo!r}`
+    "RUF046", # unnecessary-cast-to-int: sometimes it's nice to be explicit
+
+    "G004", # logging-f-string: f strings more readable and we don't care about the perf
+
+    # Unpopular flake8-simplify rules
+    # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+    "SIM102",
+    "SIM103",
+    "SIM105",
+    "SIM108",
+    "SIM110",
+    "SIM113",
+    "SIM114",
+
+    "RET504", # unnecessary-assign: nice e.g. when constructing then returning big dicts
+]

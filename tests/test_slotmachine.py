@@ -1,13 +1,13 @@
 import unittest
 from collections import defaultdict
+
 from dateutil import parser
-from slotmachine import SlotMachine, Unsatisfiable
 
-Talk = SlotMachine.Talk
+from slotmachine import SlotMachine, Talk, Unsatisfiable
 
 
-def unzip(l):
-    return zip(*l)
+def unzip(iter):
+    return zip(*iter, strict=True)
 
 
 class UtilTestCase(unittest.TestCase):
@@ -48,7 +48,7 @@ class ScheduleTalksTestCase(unittest.TestCase):
         # All talks must be represented
         self.assertEqual(sorted(talks), sorted(talk_ids))
         # All slots/venue tuples must be different
-        slot_venues = list(zip(slots, venues))
+        slot_venues = list(zip(slots, venues, strict=False))
         self.assertEqual(sorted(set(slot_venues)), sorted(slot_venues))
         # Check slots are valid
         self.assertTrue(all(s in avail_slots for s in slots))
@@ -80,8 +80,7 @@ class ScheduleTalksTestCase(unittest.TestCase):
         sm.slots_available = avail_slots
 
         with self.assertRaises(Unsatisfiable):
-            solved = sm.schedule_talks(talk_defs, old_talks=old_talks)
-            print(solved)
+            sm.schedule_talks(talk_defs, old_talks=old_talks)
 
     def test_simple(self):
         talk_defs = [
@@ -235,7 +234,7 @@ class ScheduleTalksTestCase(unittest.TestCase):
         )
 
         slots, talks, venues = unzip(solved)
-        talks_slots = dict(zip(talks, slots))
+        talks_slots = dict(zip(talks, slots, strict=False))
 
         # There's no reason to move talk 1, so the speaker's only available afterwards
         self.assertTrue(talks_slots[4] >= 8)
@@ -267,7 +266,7 @@ class ScheduleTalksTestCase(unittest.TestCase):
         )
 
         slots, talks, venues = unzip(solved)
-        talks_slots = dict(zip(talks, slots))
+        talks_slots = dict(zip(talks, slots, strict=False))
 
         # Talk 1 must now be in slot 3 or 4
         self.assertIn(talks_slots[1], [3, 4])
